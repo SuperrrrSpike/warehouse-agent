@@ -1,0 +1,10 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.env
+.venv/
+.agent/
+data/*.db
+data/external/order_picking_mendeley/raw/*
+data/processed/*.csv
+models/**/*.joblib

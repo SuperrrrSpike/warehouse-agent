@@ -1,0 +1,34 @@
+{
+  "dataset": "Order Picking Dataset from a Warehouse of a Footwear Manufacturing Company",
+  "dataset_id": "pf2w725pw3",
+  "version": 1,
+  "doi": "10.17632/pf2w725pw3.1",
+  "license": "CC BY 4.0",
+  "source": "https://data.mendeley.com/datasets/pf2w725pw3/1",
+  "files": {
+    "Customer_Order.csv": {
+      "sha256": "e28ae8ac9b368b9496b153fafb5af685bd94ba1530ffcb308dfcd5403601f325",
+      "bytes": 9460535
+    },
+    "Picking_Wave.csv": {
+      "sha256": "4065a8a94f68c402ef4543245373ac91f6835ecdf34a1e4674cb6981b394b88c",
+      "bytes": 9680418
+    },
+    "Product.csv": {
+      "sha256": "416527e5260c17003177e1389fd48042d9790be9ef9cabe4c6c07e583e01eb2f",
+      "bytes": 3977
+    },
+    "Storage_Location.csv": {
+      "sha256": "2895d9da16b4d63e85a17bfe050cc77b72d5654298072d6fa3b1732b1c1d6cc3",
+      "bytes": 74664
+    },
+    "Support_Points_Navigation.csv": {
+      "sha256": "848dd2bafd5cce8506555e5fc83369eb985cb446edd84d3fa259f19be449c479",
+      "bytes": 1164
+    },
+    "README.txt": {
+      "sha256": "123b25c62bcfab3e4506ae77ba391915f5ed5f236559e24435b17efb02077df9",
+      "bytes": 4487
+    }
+  }
+}

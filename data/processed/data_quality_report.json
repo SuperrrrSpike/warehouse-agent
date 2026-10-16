@@ -1,0 +1,16 @@
+{
+  "source_rows": {
+    "picking_wave": 215192,
+    "customer_order": 122370,
+    "storage_location": 2292,
+    "product": 208
+  },
+  "wave_count": 9707,
+  "eligible_wave_count": 8185,
+  "location_mapping_rate": 0.8902886724413547,
+  "product_mapping_rate": 1.0,
+  "missing_order_date_waves": 0,
+  "duplicate_picking_rows": 102201,
+  "feature_sha256": "983a992a80e99e08f639716a126b07a5cab9e5c2d1754d914755240e71222c9d",
+  "target_definition": "Manhattan round-trip distance from depot (66,-29) through the recorded pick sequence; units follow the source layout coordinate system."
+}

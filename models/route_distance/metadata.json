@@ -1,0 +1,210 @@
+{
+  "model_name": "wave_route_distance_estimator",
+  "model_version": "1.1.0",
+  "selected_algorithm": "hist_gradient_boosting",
+  "business_use": "Estimate picking-wave travel workload before execution for capacity planning.",
+  "target": "route_distance_proxy",
+  "target_limitations": "Target is a deterministic Manhattan route proxy derived from the source pick sequence, not an observed travel-time measurement.",
+  "features": [
+    "pick_lines",
+    "total_units",
+    "unique_skus",
+    "unique_locations",
+    "mapped_pick_count",
+    "mapping_rate",
+    "aisle_count",
+    "floor_count",
+    "x_mean",
+    "y_mean",
+    "x_std",
+    "y_std",
+    "x_range",
+    "y_range",
+    "abc_a_share",
+    "product_mapping_rate",
+    "order_count",
+    "customer_count",
+    "ordered_units",
+    "weekday",
+    "month"
+  ],
+  "dataset": {
+    "name": "Order Picking Dataset from a Warehouse of a Footwear Manufacturing Company",
+    "doi": "10.17632/pf2w725pw3.1",
+    "license": "CC BY 4.0"
+  },
+  "split_strategy": "chronological 70% train / 15% validation / 15% test by wave creation time",
+  "feature_sha256": "983a992a80e99e08f639716a126b07a5cab9e5c2d1754d914755240e71222c9d",
+  "rows": {
+    "eligible": 8185,
+    "train": 5729,
+    "validation": 1228,
+    "test": 1228
+  },
+  "date_ranges": {
+    "train": {
+      "start": "2023-01-05T07:42:00",
+      "end": "2023-07-27T07:14:00"
+    },
+    "validation": {
+      "start": "2023-07-27T11:08:00",
+      "end": "2023-09-10T09:26:00"
+    },
+    "test": {
+      "start": "2023-09-10T09:26:00",
+      "end": "2023-10-19T07:18:00"
+    }
+  },
+  "validation_candidates": {
+    "ridge": {
+      "mae": 391.4934792493593,
+      "rmse": 521.0839160291747,
+      "r2": 0.8486665978077754,
+      "median_absolute_error": 305.16933742487345
+    },
+    "random_forest": {
+      "mae": 345.8223323934648,
+      "rmse": 479.85519838866793,
+      "r2": 0.8716665507218314,
+      "median_absolute_error": 263.35091342217174
+    },
+    "hist_gradient_boosting": {
+      "mae": 342.11912372932335,
+      "rmse": 480.07452848581937,
+      "r2": 0.8715492077369709,
+      "median_absolute_error": 243.07390577077285
+    }
+  },
+  "test_metrics": {
+    "mae": 368.1763521902567,
+    "rmse": 512.9955404432775,
+    "r2": 0.8446675822770642,
+    "median_absolute_error": 262.09512023242246
+  },
+  "test_error_slices": {
+    "by_actual_workload_quartile": {
+      "Q1": {
+        "rows": 308,
+        "mae": 180.53672785037926,
+        "rmse": 277.6845160672472,
+        "r2": 0.7538858907540684,
+        "median_absolute_error": 90.88189906896264
+      },
+      "Q2": {
+        "rows": 306,
+        "mae": 372.01398543847057,
+        "rmse": 489.871546459324,
+        "r2": -1.6865763884780836,
+        "median_absolute_error": 273.6738560651902
+      },
+      "Q3": {
+        "rows": 310,
+        "mae": 346.47641004560137,
+        "rmse": 435.712190536334,
+        "r2": -2.3451427587389397,
+        "median_absolute_error": 284.8729574499862
+      },
+      "Q4": {
+        "rows": 304,
+        "mae": 576.5502685967433,
+        "rmse": 741.4698400713079,
+        "r2": -0.6901703453610051,
+        "median_absolute_error": 455.53210074283425
+      }
+    },
+    "by_location_mapping_rate": {
+      "80%-90%": {
+        "rows": 44,
+        "mae": 348.4403628669341,
+        "rmse": 459.24357130576357,
+        "r2": 0.8374124908359988,
+        "median_absolute_error": 257.9036774610372
+      },
+      "90%-99%": {
+        "rows": 106,
+        "mae": 456.3074277527729,
+        "rmse": 598.0651372614055,
+        "r2": 0.6980816379071968,
+        "median_absolute_error": 390.44909322361764
+      },
+      "100%": {
+        "rows": 1078,
+        "mae": 360.31595285871634,
+        "rmse": 505.96793300594703,
+        "r2": 0.8518113710268975,
+        "median_absolute_error": 253.1466015583203
+      }
+    }
+  },
+  "baseline_metrics": {
+    "mae": 1077.6970684039088,
+    "rmse": 1309.6961827863788,
+    "r2": -0.012455737922416388,
+    "median_absolute_error": 956.0
+  },
+  "mae_improvement_vs_median_pct": 65.83674921418007,
+  "uncertainty": {
+    "method": "90th percentile of absolute validation residuals before final refit",
+    "absolute_error_p90": 785.8507256349612,
+    "coverage_note": "Operational planning interval; not a formal probabilistic guarantee."
+  },
+  "top_features": [
+    {
+      "feature": "y_range",
+      "importance_mean": 198.78133780872903,
+      "importance_std": 2.595644794080628
+    },
+    {
+      "feature": "x_range",
+      "importance_mean": 146.34443951111098,
+      "importance_std": 7.9108367083544096
+    },
+    {
+      "feature": "aisle_count",
+      "importance_mean": 115.71935326977487,
+      "importance_std": 10.059179414420127
+    },
+    {
+      "feature": "unique_locations",
+      "importance_mean": 89.09093898408254,
+      "importance_std": 5.828630705245432
+    },
+    {
+      "feature": "y_mean",
+      "importance_mean": 86.37177254339407,
+      "importance_std": 2.9419760802787676
+    },
+    {
+      "feature": "unique_skus",
+      "importance_mean": 70.26773724704118,
+      "importance_std": 5.077182612593693
+    },
+    {
+      "feature": "x_mean",
+      "importance_mean": 62.005258706699536,
+      "importance_std": 3.8184770134250208
+    },
+    {
+      "feature": "x_std",
+      "importance_mean": 6.797128852797153,
+      "importance_std": 2.833481276268803
+    },
+    {
+      "feature": "abc_a_share",
+      "importance_mean": 3.0496873519268775,
+      "importance_std": 1.5560840134901754
+    },
+    {
+      "feature": "y_std",
+      "importance_mean": 2.6995742440981645,
+      "importance_std": 1.3075277740999334
+    }
+  ],
+  "runtime": {
+    "python": "3.12.14",
+    "pandas": "2.3.3",
+    "numpy": "2.5.3",
+    "scikit_learn": "1.9.1"
+  },
+  "trained_at": "2026-10-09T18:06:33.437218+00:00"
+}

@@ -1,0 +1,164 @@
+{
+  "task_count": 1512,
+  "completed_task_count": 1420,
+  "backlog_count": 92,
+  "completion_rate_pct": 93.91534391534391,
+  "avg_task_minutes": 35.782394357445376,
+  "throughput_per_day": 202.85714285714286,
+  "avg_utilization_pct": 55.33068783068783,
+  "empty_run_pct": 20.92135376253882,
+  "avg_queue_wait_minutes": 11.25871693121693,
+  "total_travel_distance_km": 457.36352,
+  "exception_count": 212,
+  "active_robot_count": 12,
+  "active_station_count": 6,
+  "congested_station_count": 1,
+  "risk_flags": [
+    "机器人平均利用率低于 58%，可能存在任务分配不均或等待时间过长。",
+    "共有 1 个站点达到拥堵阈值，建议优先疏导。"
+  ],
+  "recommendations": [
+    "按站点和任务等待时长拆分积压，优先处理超时任务。",
+    "对 S03 设置临时限流或任务分流，并复核人员、工位与补货节拍。",
+    "按机器人统计空跑路径，调整就近派单、回程捎带和待命点策略。",
+    "检查机器人闲置时段与任务波峰，优化班次容量和调度优先级。"
+  ],
+  "top_congested_stations": [
+    {
+      "station_id": "S03",
+      "avg_queue_wait_minutes": 12.717142857142857,
+      "max_queue_wait_minutes": 31.68,
+      "completed_task_count": 222
+    },
+    {
+      "station_id": "S04",
+      "avg_queue_wait_minutes": 11.392857142857142,
+      "max_queue_wait_minutes": 31.67,
+      "completed_task_count": 240
+    },
+    {
+      "station_id": "S01",
+      "avg_queue_wait_minutes": 11.167142857142858,
+      "max_queue_wait_minutes": 30.72,
+      "completed_task_count": 232
+    }
+  ],
+  "top_robot_exceptions": [
+    {
+      "robot_id": "R07",
+      "empty_run_pct": 20.252746535971596,
+      "task_count": 154,
+      "exception_count": 27,
+      "utilization_pct": 58.72023809523809
+    },
+    {
+      "robot_id": "R06",
+      "empty_run_pct": 20.581535857703713,
+      "task_count": 119,
+      "exception_count": 24,
+      "utilization_pct": 58.204365079365076
+    },
+    {
+      "robot_id": "R02",
+      "empty_run_pct": 22.0377388638395,
+      "task_count": 134,
+      "exception_count": 21,
+      "utilization_pct": 50.33730158730158
+    },
+    {
+      "robot_id": "R04",
+      "empty_run_pct": 20.435503627061376,
+      "task_count": 117,
+      "exception_count": 20,
+      "utilization_pct": 52.05357142857143
+    },
+    {
+      "robot_id": "R12",
+      "empty_run_pct": 19.711985222602607,
+      "task_count": 128,
+      "exception_count": 19,
+      "utilization_pct": 61.31944444444444
+    }
+  ],
+  "daily_trends": [
+    {
+      "biz_date": "2026-07-24",
+      "task_count": 180,
+      "completed_task_count": 169,
+      "backlog_count": 11,
+      "completion_rate_pct": 93.88888888888889,
+      "avg_queue_wait_minutes": 10.929166666666667,
+      "empty_run_pct": 20.666814689300676,
+      "utilization_pct": 54.64699074074074,
+      "exception_count": 21
+    },
+    {
+      "biz_date": "2026-07-25",
+      "task_count": 192,
+      "completed_task_count": 180,
+      "backlog_count": 12,
+      "completion_rate_pct": 93.75,
+      "avg_queue_wait_minutes": 11.040833333333333,
+      "empty_run_pct": 21.51477161501961,
+      "utilization_pct": 55.78125,
+      "exception_count": 29
+    },
+    {
+      "biz_date": "2026-07-26",
+      "task_count": 204,
+      "completed_task_count": 192,
+      "backlog_count": 12,
+      "completion_rate_pct": 94.11764705882354,
+      "avg_queue_wait_minutes": 11.600686274509803,
+      "empty_run_pct": 20.57737758102846,
+      "utilization_pct": 56.736111111111114,
+      "exception_count": 30
+    },
+    {
+      "biz_date": "2026-07-27",
+      "task_count": 216,
+      "completed_task_count": 203,
+      "backlog_count": 13,
+      "completion_rate_pct": 93.98148148148148,
+      "avg_queue_wait_minutes": 10.922916666666666,
+      "empty_run_pct": 21.306636444678613,
+      "utilization_pct": 58.05555555555555,
+      "exception_count": 48
+    },
+    {
+      "biz_date": "2026-07-28",
+      "task_count": 228,
+      "completed_task_count": 214,
+      "backlog_count": 14,
+      "completion_rate_pct": 93.85964912280701,
+      "avg_queue_wait_minutes": 11.456754385964912,
+      "empty_run_pct": 19.96621374390156,
+      "utilization_pct": 53.09027777777778,
+      "exception_count": 22
+    },
+    {
+      "biz_date": "2026-07-29",
+      "task_count": 240,
+      "completed_task_count": 225,
+      "backlog_count": 15,
+      "completion_rate_pct": 93.75,
+      "avg_queue_wait_minutes": 11.883333333333333,
+      "empty_run_pct": 20.665463601620772,
+      "utilization_pct": 53.59375,
+      "exception_count": 31
+    },
+    {
+      "biz_date": "2026-07-30",
+      "task_count": 252,
+      "completed_task_count": 237,
+      "backlog_count": 15,
+      "completion_rate_pct": 94.04761904761905,
+      "avg_queue_wait_minutes": 10.897063492063491,
+      "empty_run_pct": 21.663059366440883,
+      "utilization_pct": 55.410879629629626,
+      "exception_count": 31
+    }
+  ],
+  "biz_date": "2026-07-24 ~ 2026-07-30",
+  "period_days": 7
+}
