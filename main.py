@@ -166,6 +166,19 @@ def train_model(config: AppConfig) -> Path:
     return model_path
 
 
+def validate_model(config: AppConfig) -> bool:
+    from warehouse_agent.model import validate_saved_model
+
+    report = validate_saved_model(config.root_dir)
+    print("模型回归门禁：PASS")
+    for rule in report["rules"]:
+        print(
+            f"[PASS] {rule['name']}：{rule['actual']:.4f} "
+            f"{rule['operator']} {rule['threshold']:.4f}"
+        )
+    return True
+
+
 def score_real_waves(config: AppConfig) -> Path:
     from warehouse_agent.model import score_waves
 
@@ -218,6 +231,7 @@ def build_parser() -> argparse.ArgumentParser:
     sub.add_parser("validate", help="执行数据质量检查")
     sub.add_parser("prepare-real-data", help="将真实拣选数据转换为波次级训练特征")
     sub.add_parser("train-model", help="训练并评估波次路径负荷模型")
+    sub.add_parser("validate-model", help="使用版本化阈值检查现有模型元数据")
     sub.add_parser("score-waves", help="使用已训练模型为历史波次评分")
     sub.add_parser("ml-dashboard", help="生成真实数据模型评估与波次负荷看板")
     sub.add_parser("ml-pipeline", help="依次执行真实数据特征、训练和评分流程")
@@ -254,6 +268,8 @@ def main() -> int:
             prepare_real_data(config)
         elif args.command == "train-model":
             train_model(config)
+        elif args.command == "validate-model":
+            return 0 if validate_model(config) else 1
         elif args.command == "score-waves":
             score_real_waves(config)
         elif args.command == "ml-dashboard":

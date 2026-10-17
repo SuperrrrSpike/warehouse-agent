@@ -24,6 +24,25 @@ def build_ml_dashboard(root_dir: Path) -> Path:
 
 def render_ml_dashboard(metadata: dict, quality: dict, scores: pd.DataFrame) -> str:
     test = metadata["test_metrics"]
+    gate = metadata.get("model_gate", {"status": "not_available", "rules": []})
+    drift = metadata.get(
+        "drift",
+        {
+            "status": "not_available",
+            "status_counts": {"stable": 0, "warning": 0, "alert": 0},
+            "expected_shift_features": [],
+        },
+    )
+    drift_counts = drift.get("status_counts", {})
+    expected_shifts = ", ".join(drift.get("expected_shift_features", [])) or "无"
+    gate_label = "PASS" if gate.get("status") == "passed" else "待检查"
+    drift_labels = {
+        "stable": "稳定",
+        "warning": "警告",
+        "alert": "告警",
+        "not_available": "待检查",
+    }
+    drift_label = drift_labels.get(drift.get("status"), "待检查")
     band_counts = scores["workload_band"].value_counts().to_dict()
     top_waves = scores.nlargest(10, "predicted_route_distance")
     features = metadata["top_features"][:8]
@@ -60,6 +79,7 @@ def render_ml_dashboard(metadata: dict, quality: dict, scores: pd.DataFrame) -> 
 .feature{{display:grid;grid-template-columns:130px 1fr 58px;align-items:center;gap:10px;margin:11px 0;font-size:12px}} .feature>div{{height:9px;border-radius:99px;background:#e8eef2;overflow:hidden}} .feature i{{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--cyan))}} .feature b{{text-align:right}}
 table{{width:100%;border-collapse:collapse;font-size:12px}} th{{color:var(--muted);font-size:11px;text-align:left}} th,td{{padding:10px 8px;border-bottom:1px solid #edf1f3;white-space:nowrap}} .table{{overflow:auto}} .pill{{padding:4px 8px;border-radius:99px;color:#9d302e;background:#fde9e7;font-weight:800}}
 .lineage{{display:flex;align-items:center;justify-content:space-between;gap:8px}} .node{{flex:1;padding:15px 10px;text-align:center;border:1px solid var(--line);border-radius:12px;background:#f9fbfc;font-size:12px;font-weight:700}} .arrow{{color:var(--blue);font-weight:900}}
+.monitor{{display:flex;align-items:center;justify-content:space-between;gap:18px}} .monitor strong{{font-size:28px;color:#26775f}} .monitor.warning strong{{color:var(--amber)}} .monitor p{{margin:5px 0;color:var(--muted);font-size:12px;line-height:1.6}}
 .note{{margin:0;padding-left:19px;color:#52616e;font-size:13px;line-height:1.7}} footer{{margin-top:18px;text-align:right;color:var(--muted);font-size:11px}}
 @media(max-width:900px){{.metrics{{grid-template-columns:repeat(3,1fr)}}.grid{{grid-template-columns:1fr}}.wide{{grid-column:auto}}}} @media(max-width:560px){{.metrics{{grid-template-columns:repeat(2,1fr)}}header{{align-items:start;flex-direction:column}}.bands{{grid-template-columns:repeat(2,1fr)}}.lineage{{flex-direction:column}}.arrow{{transform:rotate(90deg)}}}}
 </style></head><body><main class="shell">
@@ -75,6 +95,8 @@ table{{width:100%;border-collapse:collapse;font-size:12px}} th{{color:var(--mute
 <section class="grid">
 <article class="panel"><h2>预测负荷分层</h2><div class="bands">{band_html}</div></article>
 <article class="panel"><h2>数据与模型流水线</h2><div class="lineage"><div class="node">WMS 明细<br>337,562 行</div><div class="arrow">→</div><div class="node">波次特征<br>9,707 条</div><div class="arrow">→</div><div class="node">时间切分<br>70/15/15</div><div class="arrow">→</div><div class="node">负荷评分<br>4 档</div></div></article>
+<article class="panel"><h2>模型回归门禁</h2><div class="monitor"><div><strong>{gate_label}</strong><p>R²、MAE 与相对中位数基线改善必须同时达标；失败模型不会覆盖现有产物。</p></div></div></article>
+<article class="panel"><h2>可行动漂移</h2><div class="monitor {escape(drift.get('status', ''))}"><div><strong>{drift_label}</strong><p>稳定 {drift_counts.get('stable', 0)} · 警告 {drift_counts.get('warning', 0)} · 告警 {drift_counts.get('alert', 0)}<br>预期日历偏移：{escape(expected_shifts)}</p></div></div></article>
 <article class="panel"><h2>特征贡献（Permutation MAE）</h2>{feature_html}</article>
 <article class="panel"><h2>验证集模型选择</h2><div class="table"><table><thead><tr><th>候选算法</th><th>MAE</th><th>RMSE</th><th>R²</th></tr></thead><tbody>{candidate_rows}</tbody></table></div></article>
 <article class="panel wide"><h2>预测负荷最高的波次</h2><div class="table"><table><thead><tr><th>波次</th><th>创建时间</th><th>拣选行</th><th>唯一库位</th><th>预测距离</th><th>规划区间</th><th>建议动作</th></tr></thead><tbody>{wave_rows}</tbody></table></div></article>

@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "model_name": "wave_route_distance_estimator",
+  "target": "route_distance_proxy",
+  "thresholds": {
+    "min_test_r2": 0.8,
+    "max_test_mae": 430.0,
+    "min_mae_improvement_vs_median_pct": 50.0
+  },
+  "rationale": {
+    "min_test_r2": "Retains useful explanatory power on the chronological holdout.",
+    "max_test_mae": "Allows limited library-level variation above the current 368.2 result.",
+    "min_mae_improvement_vs_median_pct": "Requires a material improvement over a naive median baseline."
+  },
+  "change_policy": "Threshold changes require a documented data or business reason; do not lower them only to make a failed model pass."
+}

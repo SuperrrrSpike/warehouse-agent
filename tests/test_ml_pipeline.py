@@ -70,6 +70,48 @@ class ModelDashboardTests(unittest.TestCase):
         self.assertIn("&lt;script&gt;alert(1)&lt;/script&gt;", html)
         self.assertNotIn("<script>alert(1)</script>", html)
 
+    def test_dashboard_shows_model_gate_and_drift_summary(self):
+        metadata = {
+            "model_version": "1.2.0",
+            "rows": {"eligible": 100},
+            "test_metrics": {"mae": 10.0, "r2": 0.8},
+            "mae_improvement_vs_median_pct": 20.0,
+            "top_features": [],
+            "validation_candidates": {
+                "ridge": {"mae": 11.0, "rmse": 12.0, "r2": 0.7}
+            },
+            "selected_algorithm": "ridge",
+            "model_gate": {"status": "passed", "rules": []},
+            "drift": {
+                "status": "warning",
+                "status_counts": {"stable": 16, "warning": 4, "alert": 0},
+                "raw_status_counts": {"stable": 16, "warning": 4, "alert": 1},
+                "expected_shift_features": ["month"],
+            },
+        }
+        quality = {"location_mapping_rate": 0.9}
+        scores = pd.DataFrame(
+            [
+                {
+                    "wave_number": 1,
+                    "created_at": "2023-01-01 08:00",
+                    "pick_lines": 10,
+                    "unique_locations": 5,
+                    "predicted_route_distance": 100.0,
+                    "prediction_lower_p90": 80.0,
+                    "prediction_upper_p90": 120.0,
+                    "workload_band": "normal",
+                    "recommended_action": "正常监控",
+                }
+            ]
+        )
+
+        html = render_ml_dashboard(metadata, quality, scores)
+
+        self.assertIn("模型回归门禁", html)
+        self.assertIn("可行动漂移", html)
+        self.assertIn("month", html)
+
 
 if __name__ == "__main__":
     unittest.main()

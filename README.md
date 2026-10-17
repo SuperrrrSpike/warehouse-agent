@@ -11,6 +11,8 @@
 - **运营诊断**：完成率、吞吐、任务耗时、机器人利用率、空跑、排队、异常和拥堵站点。
 - **真实数据建模**：下载、校验、清洗并关联订单、波次、商品和库位数据，生成波次级训练特征。
 - **可靠评估**：按时间顺序进行 70%/15%/15% 训练、验证和测试切分，对比 Ridge、Random Forest 与 HistGradientBoosting，并设置中位数基线。
+- **漂移监控**：用训练窗口与测试窗口计算逐特征 PSI，区分稳定、警告和告警，不把阈值包装成统计显著性结论。
+- **回归门禁**：模型必须满足版本化 R²、MAE 和相对基线改善阈值，失败时不会覆盖已有模型。
 - **可执行输出**：按预测负荷划分正常、关注、高负荷和关键四档，输出预测区间与 `wave_action_queue.csv` 班前复核清单。
 - **可审计产物**：保存数据指纹、运行时版本、候选模型指标、测试误差分层、特征重要性和模型卡。
 - **本地优先**：核心指标与预测不依赖外部 LLM；管理摘要可选接入外部模型，失败时回退本地规则。
@@ -97,6 +99,9 @@ open reports/ml-wave-workload-dashboard.html
 | `data/warehouse_real.db` | `wave_features` 和 `wave_predictions` 表 |
 | `models/route_distance/metadata.json` | 切分、指标、误差分层、运行环境和数据指纹 |
 | `models/route_distance/MODEL_CARD.md` | 用途、限制与上线门槛 |
+| `models/route_distance/drift_report.json` | 训练窗口与测试窗口的逐特征 PSI 漂移报告 |
+| `models/route_distance/model_gate.json` | 性能阈值、实际值及逐规则通过状态 |
+| `models/route_distance/regression_baseline.json` | 受版本控制的模型发布最低阈值 |
 | `reports/wave_action_queue.csv` | 高负荷与关键波次班前复核清单 |
 | `reports/ml-wave-workload-dashboard.html` | 模型与业务结果展示页 |
 
@@ -105,9 +110,14 @@ open reports/ml-wave-workload-dashboard.html
 ```bash
 make test
 make validate
+make validate-model
 ```
 
 测试覆盖日期校验、空数据、指标一致性、数据质量规则、HTML 转义、路线距离计算、模型指标和行动规则。`validate` 针对基础 SQLite 演示库执行 10 项数据质量检查。
+
+`validate-model` 不重新训练模型，只使用仓库中的元数据和版本化基线检查当前模型。修改阈值必须有数据或业务依据，不能只为让失败模型通过而下调。
+
+按时间切分时，`month` 的分布变化属于已知日历迁移。报告保留其原始 PSI 和告警，但总体“可行动漂移”状态不由该特征触发，避免把季节推进误报为未知业务变化。
 
 ## 基础运营演示
 
@@ -132,6 +142,7 @@ python3 main.py bootstrap --start-date 2026-07-24 --days 7 --seed 42 --force
 - 约 11% 的拣选明细无法映射到库位坐标；训练只保留映射率不低于 80%、且至少有 3 个有效拣选点的波次。
 - 操作员字段只保留用于追溯，不作为模型特征；模型不得用于员工绩效评价。
 - 预测区间基于验证集绝对残差 90 分位，只用于容量规划，不是正式的概率覆盖保证。
+- PSI 阈值只用于工程预警；漂移告警需要结合真实误差和业务变化判断，当前不会自动触发重训练。
 - 真正上线还需补充班次、拥堵、设备状态、截止时间，并建立漂移监控、人工确认和回退机制。
 
 更适合面试与简历表述的说明见 [`docs/项目说明.md`](docs/项目说明.md)，详细限制见 [`models/route_distance/MODEL_CARD.md`](models/route_distance/MODEL_CARD.md)。

@@ -1,0 +1,27 @@
+{
+  "status": "passed",
+  "target": "route_distance_proxy",
+  "rules": [
+    {
+      "name": "test_r2",
+      "operator": ">=",
+      "actual": 0.8446675822770642,
+      "threshold": 0.8,
+      "passed": true
+    },
+    {
+      "name": "test_mae",
+      "operator": "<=",
+      "actual": 368.1763521902567,
+      "threshold": 430.0,
+      "passed": true
+    },
+    {
+      "name": "mae_improvement_vs_median_pct",
+      "operator": ">=",
+      "actual": 65.83674921418007,
+      "threshold": 50.0,
+      "passed": true
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 {
   "model_name": "wave_route_distance_estimator",
-  "model_version": "1.1.0",
+  "model_version": "1.2.0",
   "selected_algorithm": "hist_gradient_boosting",
   "business_use": "Estimate picking-wave travel workload before execution for capacity planning.",
   "target": "route_distance_proxy",
@@ -63,7 +63,7 @@
       "median_absolute_error": 305.16933742487345
     },
     "random_forest": {
-      "mae": 345.8223323934648,
+      "mae": 345.8223323934646,
       "rmse": 479.85519838866793,
       "r2": 0.8716665507218314,
       "median_absolute_error": 263.35091342217174
@@ -143,6 +143,50 @@
     "median_absolute_error": 956.0
   },
   "mae_improvement_vs_median_pct": 65.83674921418007,
+  "drift": {
+    "status": "warning",
+    "status_counts": {
+      "stable": 16,
+      "warning": 4,
+      "alert": 0
+    },
+    "raw_status_counts": {
+      "stable": 16,
+      "warning": 4,
+      "alert": 1
+    },
+    "expected_shift_features": [
+      "month"
+    ],
+    "report_path": "drift_report.json"
+  },
+  "model_gate": {
+    "status": "passed",
+    "target": "route_distance_proxy",
+    "rules": [
+      {
+        "name": "test_r2",
+        "operator": ">=",
+        "actual": 0.8446675822770642,
+        "threshold": 0.8,
+        "passed": true
+      },
+      {
+        "name": "test_mae",
+        "operator": "<=",
+        "actual": 368.1763521902567,
+        "threshold": 430.0,
+        "passed": true
+      },
+      {
+        "name": "mae_improvement_vs_median_pct",
+        "operator": ">=",
+        "actual": 65.83674921418007,
+        "threshold": 50.0,
+        "passed": true
+      }
+    ]
+  },
   "uncertainty": {
     "method": "90th percentile of absolute validation residuals before final refit",
     "absolute_error_p90": 785.8507256349612,
@@ -206,5 +250,5 @@
     "numpy": "2.5.3",
     "scikit_learn": "1.9.1"
   },
-  "trained_at": "2026-10-09T18:06:33.437218+00:00"
+  "trained_at": "2026-10-17T18:22:32.156270+00:00"
 }

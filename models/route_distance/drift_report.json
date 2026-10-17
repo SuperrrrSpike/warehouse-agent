@@ -1,0 +1,292 @@
+{
+  "status": "warning",
+  "method": "population_stability_index",
+  "thresholds": {
+    "warning": 0.1,
+    "alert": 0.25
+  },
+  "threshold_note": "Engineering warning thresholds; they are not statistical significance tests. Expected calendar shifts remain visible but do not set the actionable status.",
+  "feature_count": 21,
+  "reference_rows": 5729,
+  "current_rows": 1228,
+  "reference_date_range": {
+    "start": "2023-01-05T07:42:00",
+    "end": "2023-07-27T07:14:00"
+  },
+  "current_date_range": {
+    "start": "2023-09-10T09:26:00",
+    "end": "2023-10-19T07:18:00"
+  },
+  "expected_shift_features": [
+    "month"
+  ],
+  "raw_status_counts": {
+    "stable": 16,
+    "warning": 4,
+    "alert": 1
+  },
+  "actionable_status_counts": {
+    "stable": 16,
+    "warning": 4,
+    "alert": 0
+  },
+  "status_counts": {
+    "stable": 16,
+    "warning": 4,
+    "alert": 0
+  },
+  "features": {
+    "pick_lines": {
+      "psi": 0.19757811298742117,
+      "status": "warning",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 22.104206667830336,
+      "current_mean": 23.439739413680783,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 5,
+      "expected_shift": false
+    },
+    "total_units": {
+      "psi": 0.19757811298742117,
+      "status": "warning",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 22.104206667830336,
+      "current_mean": 23.439739413680783,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 5,
+      "expected_shift": false
+    },
+    "unique_skus": {
+      "psi": 0.034544774970825406,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 6.45610054110665,
+      "current_mean": 7.058631921824104,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "unique_locations": {
+      "psi": 0.06415369051571666,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 11.571478443009251,
+      "current_mean": 12.9128664495114,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "mapped_pick_count": {
+      "psi": 0.16407488321676686,
+      "status": "warning",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 21.82265665910281,
+      "current_mean": 23.201954397394136,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 5,
+      "expected_shift": false
+    },
+    "mapping_rate": {
+      "psi": 0.011814492388920685,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 0.9872644001350045,
+      "current_mean": 0.9899098426325262,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 3,
+      "expected_shift": false
+    },
+    "aisle_count": {
+      "psi": 0.030054382839878494,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 4.680048874149066,
+      "current_mean": 5.02442996742671,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 8,
+      "expected_shift": false
+    },
+    "floor_count": {
+      "psi": 0.01042869710597262,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 1.9170884971199162,
+      "current_mean": 1.9429967426710097,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 2,
+      "expected_shift": false
+    },
+    "x_mean": {
+      "psi": 0.024120739060695756,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 379.61819264512746,
+      "current_mean": 370.0321440017086,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "y_mean": {
+      "psi": 0.05962950186728813,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 947.9783555830828,
+      "current_mean": 928.4018525322799,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "x_std": {
+      "psi": 0.022920929601466078,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 125.90227201842724,
+      "current_mean": 128.96628538427686,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "y_std": {
+      "psi": 0.04364416429000567,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 159.83971860037818,
+      "current_mean": 172.22521478109618,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "x_range": {
+      "psi": 0.03155716349733174,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 393.30075056728924,
+      "current_mean": 405.1400651465798,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "y_range": {
+      "psi": 0.07795894708546149,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 514.486646884273,
+      "current_mean": 560.8192182410423,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "abc_a_share": {
+      "psi": 0.028938806152247216,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 0.43615344837709097,
+      "current_mean": 0.39829271527463106,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 10,
+      "expected_shift": false
+    },
+    "product_mapping_rate": {
+      "psi": 0.0,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 1.0,
+      "current_mean": 1.0,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 3,
+      "expected_shift": false
+    },
+    "order_count": {
+      "psi": 0.009403398290261525,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 4.050096002792809,
+      "current_mean": 3.9079804560260585,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 8,
+      "expected_shift": false
+    },
+    "customer_count": {
+      "psi": 0.04140045570217534,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 2.5507069296561355,
+      "current_mean": 2.202768729641694,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 6,
+      "expected_shift": false
+    },
+    "ordered_units": {
+      "psi": 0.02977828637980197,
+      "status": "stable",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 23.550881480188515,
+      "current_mean": 24.27442996742671,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 3,
+      "expected_shift": false
+    },
+    "weekday": {
+      "psi": 0.13257773442248583,
+      "status": "warning",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 1.740443358352243,
+      "current_mean": 1.8697068403908794,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 5,
+      "expected_shift": false
+    },
+    "month": {
+      "psi": 12.411213595063202,
+      "status": "alert",
+      "reference_rows": 5729,
+      "current_rows": 1228,
+      "reference_mean": 3.973293768545994,
+      "current_mean": 9.548045602605864,
+      "reference_missing_rate": 0.0,
+      "current_missing_rate": 0.0,
+      "bin_count": 8,
+      "expected_shift": true
+    }
+  }
+}

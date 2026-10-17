@@ -20,6 +20,8 @@ from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 
+from .monitoring import build_drift_report, enforce_model_gate, evaluate_model_gate
+
 
 FEATURES = [
     "pick_lines",
@@ -46,26 +48,33 @@ FEATURES = [
 ]
 TARGET = "route_distance_proxy"
 RANDOM_STATE = 42
-MODEL_VERSION = "1.1.0"
+MODEL_VERSION = "1.2.0"
 
 
-def train_route_model(root_dir: Path) -> tuple[Path, Path]:
-    feature_path = root_dir / "data" / "processed" / "wave_features.csv"
-    if not feature_path.exists():
-        raise FileNotFoundError("缺少 wave_features.csv，请先运行 prepare-real-data")
-    data = pd.read_csv(feature_path, parse_dates=["created_at"])
-    data = data.loc[data["eligible_for_training"].astype(str).str.lower().isin(["true", "1"])].copy()
-    data = data.dropna(subset=[TARGET, "created_at"]).sort_values(["created_at", "wave_number"])
-    if len(data) < 500:
-        raise ValueError(f"可训练波次不足：{len(data)}，至少需要 500 条")
+def _load_regression_baseline(root_dir: Path) -> dict:
+    path = root_dir / "models" / "route_distance" / "regression_baseline.json"
+    if not path.exists():
+        raise FileNotFoundError(f"缺少模型回归基线：{path}")
+    return json.loads(path.read_text(encoding="utf-8"))
 
-    train_end = int(len(data) * 0.70)
-    validation_end = int(len(data) * 0.85)
-    train = data.iloc[:train_end]
-    validation = data.iloc[train_end:validation_end]
-    test = data.iloc[validation_end:]
 
-    candidates = {
+def validate_saved_model(root_dir: Path) -> dict:
+    metadata_path = root_dir / "models" / "route_distance" / "metadata.json"
+    if not metadata_path.exists():
+        raise FileNotFoundError(f"缺少模型元数据：{metadata_path}")
+    metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
+    report = evaluate_model_gate(
+        metadata["test_metrics"],
+        metadata["mae_improvement_vs_median_pct"],
+        _load_regression_baseline(root_dir),
+        target=metadata["target"],
+    )
+    enforce_model_gate(report)
+    return report
+
+
+def _candidate_estimators() -> dict:
+    return {
         "ridge": Pipeline(
             [
                 ("imputer", SimpleImputer(strategy="median")),
@@ -105,6 +114,25 @@ def train_route_model(root_dir: Path) -> tuple[Path, Path]:
         ),
     }
 
+
+def train_route_model(root_dir: Path) -> tuple[Path, Path]:
+    feature_path = root_dir / "data" / "processed" / "wave_features.csv"
+    if not feature_path.exists():
+        raise FileNotFoundError("缺少 wave_features.csv，请先运行 prepare-real-data")
+    data = pd.read_csv(feature_path, parse_dates=["created_at"])
+    data = data.loc[data["eligible_for_training"].astype(str).str.lower().isin(["true", "1"])].copy()
+    data = data.dropna(subset=[TARGET, "created_at"]).sort_values(["created_at", "wave_number"])
+    if len(data) < 500:
+        raise ValueError(f"可训练波次不足：{len(data)}，至少需要 500 条")
+
+    train_end = int(len(data) * 0.70)
+    validation_end = int(len(data) * 0.85)
+    train = data.iloc[:train_end]
+    validation = data.iloc[train_end:validation_end]
+    test = data.iloc[validation_end:]
+
+    candidates = _candidate_estimators()
+
     validation_results = {}
     validation_error_p90 = {}
     for name, estimator in candidates.items():
@@ -142,6 +170,21 @@ def train_route_model(root_dir: Path) -> tuple[Path, Path]:
         if baseline_metrics["mae"]
         else 0.0
     )
+    drift_report = build_drift_report(
+        train,
+        test,
+        FEATURES,
+        reference_date_range=_date_range(train),
+        current_date_range=_date_range(test),
+        expected_shift_features=["month"],
+    )
+    gate_report = evaluate_model_gate(
+        test_metrics,
+        improvement,
+        _load_regression_baseline(root_dir),
+        target=TARGET,
+    )
+    enforce_model_gate(gate_report)
 
     importance = permutation_importance(
         selected,
@@ -165,6 +208,8 @@ def train_route_model(root_dir: Path) -> tuple[Path, Path]:
     model_path = model_dir / "model.joblib"
     metadata_path = model_dir / "metadata.json"
     importance_path = model_dir / "feature_importance.csv"
+    drift_path = model_dir / "drift_report.json"
+    gate_path = model_dir / "model_gate.json"
     bundle = {
         "model": selected,
         "features": FEATURES,
@@ -213,6 +258,14 @@ def train_route_model(root_dir: Path) -> tuple[Path, Path]:
         "test_error_slices": _error_slices(test, test_prediction),
         "baseline_metrics": baseline_metrics,
         "mae_improvement_vs_median_pct": float(improvement),
+        "drift": {
+            "status": drift_report["status"],
+            "status_counts": drift_report["status_counts"],
+            "raw_status_counts": drift_report["raw_status_counts"],
+            "expected_shift_features": drift_report["expected_shift_features"],
+            "report_path": "drift_report.json",
+        },
+        "model_gate": gate_report,
         "uncertainty": {
             "method": "90th percentile of absolute validation residuals before final refit",
             "absolute_error_p90": validation_error_p90[selected_name],
@@ -227,6 +280,12 @@ def train_route_model(root_dir: Path) -> tuple[Path, Path]:
         },
         "trained_at": bundle["trained_at"],
     }
+    drift_path.write_text(
+        json.dumps(drift_report, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    gate_path.write_text(
+        json.dumps(gate_report, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
     metadata_path.write_text(json.dumps(metadata, indent=2, ensure_ascii=False), encoding="utf-8")
     _write_model_card(model_dir / "MODEL_CARD.md", metadata)
     return model_path, metadata_path
@@ -365,6 +424,7 @@ def _write_model_card(path: Path, metadata: dict) -> None:
         f"- `{item['feature']}`：{item['importance_mean']:.3f}"
         for item in metadata["top_features"][:8]
     )
+    expected_shifts = "、".join(metadata["drift"]["expected_shift_features"]) or "无"
     content = f"""# 波次路径负荷预测模型卡
 
 ## 用途
@@ -387,6 +447,9 @@ def _write_model_card(path: Path, metadata: dict) -> None:
 - 中位数基线 MAE：{baseline['mae']:.2f}。
 - 相对基线 MAE 改善：{metadata['mae_improvement_vs_median_pct']:.1f}%。
 - 规划区间：预测值 ± {metadata['uncertainty']['absolute_error_p90']:.2f} 坐标单位（基于验证集绝对误差 90 分位，不构成统计覆盖保证）。
+- 模型回归门禁：`{metadata['model_gate']['status']}`。
+- 输入特征漂移：`{metadata['drift']['status']}`（稳定 {metadata['drift']['status_counts']['stable']}、警告 {metadata['drift']['status_counts']['warning']}、告警 {metadata['drift']['status_counts']['alert']}）。
+- 预期日历偏移：`{expected_shifts}`；原始 PSI 仍保留在 `drift_report.json`，但不计入可行动状态。
 
 ## 主要特征
 

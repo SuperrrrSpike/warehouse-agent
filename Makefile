@@ -2,7 +2,7 @@ PYTHON := .venv/bin/python
 PIP := .venv/bin/pip
 MIRROR := https://pypi.tuna.tsinghua.edu.cn/simple
 
-.PHONY: setup download prepare train score dashboard ml test validate
+.PHONY: setup download prepare train score dashboard ml test validate validate-model
 
 setup:
 	python3 -m venv .venv
@@ -32,3 +32,6 @@ test:
 
 validate:
 	$(PYTHON) main.py validate
+
+validate-model:
+	$(PYTHON) main.py validate-model
