@@ -44,6 +44,30 @@ def _summarize_locally(snapshot, mode):
     return "；".join(parts) + "。"
 
 
+def _openai_response_text(data):
+    direct = data.get("output_text") if isinstance(data, dict) else None
+    if isinstance(direct, str) and direct.strip():
+        return direct.strip()
+
+    texts = []
+    output = data.get("output", []) if isinstance(data, dict) else []
+    if not isinstance(output, list):
+        return ""
+    for item in output:
+        if not isinstance(item, dict):
+            continue
+        content = item.get("content", [])
+        if not isinstance(content, list):
+            continue
+        for part in content:
+            if not isinstance(part, dict) or part.get("type") != "output_text":
+                continue
+            text = part.get("text")
+            if isinstance(text, str) and text.strip():
+                texts.append(text.strip())
+    return "\n".join(texts)
+
+
 def _summarize_with_openai(snapshot, mode, config):
     payload = {
         "model": config.openai_model,
@@ -60,9 +84,9 @@ def _summarize_with_openai(snapshot, mode, config):
     )
     with urllib.request.urlopen(req, timeout=60) as resp:
         data = json.loads(resp.read().decode("utf-8"))
-    text = data.get("output_text")
+    text = _openai_response_text(data)
     if text:
-        return text.strip()
+        return text
     return _summarize_locally(snapshot, mode)
 
 
